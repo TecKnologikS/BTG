@@ -5,7 +5,7 @@ package fr.tecknologiks.btg;
  */
 
 public class Action {
-    public static final int LOAD_URL =  1;
-    public static final int PILLAGE =   2;
-    public static final int EVASION =   3;
+    public static final int PILLAGE =   1;
+    public static final int EVASION =   2;
+
 }
