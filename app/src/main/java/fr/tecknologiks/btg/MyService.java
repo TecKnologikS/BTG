@@ -34,6 +34,7 @@ public class MyService extends Service implements JSInterface.Callback {
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             prefs.edit().putString("logPillage",  sdf.format(new Date(System.currentTimeMillis())) + " login " + "\n " + prefs.getString("logPillage", "").toString()).commit();
             webView.loadUrl(url + "/" + Page.LOGIN);
+            travianClient.Reload();
             webView.setWebViewClient(travianClient);
         }
     }

@@ -62,6 +62,12 @@ public class TravianClientCommande extends WebViewClient {
             lstAction = lstCommande.get(0).generateSubCommande();
     }
 
+    public void Reload() {
+        this.lstCommande = getCommande();
+        if (lstCommande.size() > 0)
+            lstAction = lstCommande.get(0).generateSubCommande();
+    }
+
     public ArrayList<Commande> getCommande() {
         ArrayList<Commande> retour = new ArrayList<>();
         String[] projection = {
@@ -201,7 +207,8 @@ public class TravianClientCommande extends WebViewClient {
                     }
                 }
             } else {
-                view.loadUrl(this.url + "/" + Page.ALLSEE);
+                if (!view.getUrl().equals(this.url + "/" + Page.ALLSEE))
+                    view.loadUrl(this.url + "/" + Page.ALLSEE);
             }
         }
     }

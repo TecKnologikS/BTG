@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
         pintent = PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0);
         alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         prefs.edit().putBoolean(TravianClient.LAUNCHED, true).commit();
-/*        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), 7*60000, pintent);
-*/
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), 7*60000, pintent);
+/*
                 DBHelper bdd = new DBHelper(this);
         TravianClientCommande travianClient = new TravianClientCommande("Doc Addict", "bogoss1994", "http://ts20.travian.fr", PreferenceManager.getDefaultSharedPreferences(this), bdd);
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
         //WebView webView = new WebView(this);
         //webView.loadUrl(url + "/" + Page.DORF1);
         webView.loadUrl("http://ts20.travian.fr" + "/" + Page.LOGIN);
-        webView.setWebViewClient(travianClient);
+        webView.setWebViewClient(travianClient);*/
     }
 
     @Override
