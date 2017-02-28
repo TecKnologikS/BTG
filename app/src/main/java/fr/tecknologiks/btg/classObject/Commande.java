@@ -1,6 +1,13 @@
-package fr.tecknologiks.btg;
+package fr.tecknologiks.btg.classObject;
+
+import android.content.ContentValues;
 
 import java.util.ArrayList;
+
+import fr.tecknologiks.btg.bdd.CommandeContract;
+import fr.tecknologiks.btg.bdd.DBHelper;
+
+import static fr.tecknologiks.btg.bdd.CommandeContract.*;
 
 /**
  * Created by robin on 2/27/2017.
@@ -16,6 +23,9 @@ public class Commande {
     private int village = 0; //0 --> Tous
     private int ID = 0;
     private ArrayList<String> lstArg = new ArrayList<>();
+
+    public Commande() {     }
+
 
     public int getID() {
         return ID;
@@ -84,6 +94,18 @@ public class Commande {
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.PILLAGE_SELECT) + argToFunction(ListeCommande.PILLAGE_CLICK)));
                 }
                 break;
+            case Action.TROUPE_ECURIE:
+                if (this.village != 0 && !this.info_comp.isEmpty()) {
+                    retour.add(new SubCommande(1, Page.TROUPAGES_ECURIE + Page.VILLAGE + this.village));
+                    retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
+                }
+                break;
+            case Action.TROUPE_CASERNE:
+                if (this.village != 0 && !this.info_comp.isEmpty()) {
+                    retour.add(new SubCommande(1, Page.TROUPAGES_CASERNE + Page.VILLAGE + this.village));
+                    retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
+                }
+                break;
         }
 
 
@@ -91,12 +113,21 @@ public class Commande {
     }
 
     private String argToFunction(String  commande) {
-
-        for (int i = 0; i < lstArg.size(); i++) {
-            commande = commande.replace("%" + (i+1) + "%", lstArg.get(i));
+        if (lstArg.size() > 0) {
+            for (int i = 0; i < lstArg.size(); i++) {
+                commande = commande.replace("%" + (i+1) + "%", lstArg.get(i));
+            }
+        } else {
+            commande = commande.replace("%1%", this.info_comp);
         }
 
         return commande;
+    }
+
+    public void updateLastTime(DBHelper bdd) {
+        ContentValues cv = new ContentValues();
+        cv.put(CommandeEntry.COL_LAST_TIME, System.currentTimeMillis() + "");
+        bdd.getWritableDatabase().update(CommandeEntry.TABLE_NAME, cv, CommandeEntry.COL_ID + " = ? ", new String[] {this.getID() + ""});
     }
 }
 

@@ -1,4 +1,4 @@
-package fr.tecknologiks.btg;
+package fr.tecknologiks.btg.classObject;
 
 /**
  * Created by robin on 11/22/2016.

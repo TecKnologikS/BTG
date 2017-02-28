@@ -1,4 +1,4 @@
-package fr.tecknologiks.btg;
+package fr.tecknologiks.btg.classObject;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class Villages {
 
+    private boolean fullInit= false;
     private static ArrayList<Villages> instance;
     public static ArrayList<Villages> getInstance() {
         if (instance == null)
@@ -59,5 +60,13 @@ public class Villages {
 
     public void setAttack(boolean attack) {
         this.attack = attack;
+    }
+
+    public boolean isFullInit() {
+        return fullInit;
+    }
+
+    public void setFullInit(boolean fullInit) {
+        this.fullInit = fullInit;
     }
 }

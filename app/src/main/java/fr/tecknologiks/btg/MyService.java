@@ -12,20 +12,25 @@ import android.webkit.WebView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import fr.tecknologiks.btg.bdd.DBHelper;
+import fr.tecknologiks.btg.classObject.Page;
+
 /**
  * Created by robin on 11/22/2016.
  */
 
 public class MyService extends Service implements JSInterface.Callback {
 
-    TravianClient travianClient;
+    TravianClientCommande travianClient;
     private String url = "http://ts20.travian.fr";
     WebView webView;
+    DBHelper bdd;
 
     SharedPreferences prefs;
 
     public void Go() {
         if (prefs.getBoolean(TravianClient.LAUNCHED, false)) {
+            Log.e("btg started", "");
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             prefs.edit().putString("logPillage",  sdf.format(new Date(System.currentTimeMillis())) + " login " + "\n " + prefs.getString("logPillage", "").toString()).commit();
             webView.loadUrl(url + "/" + Page.LOGIN);
@@ -35,18 +40,16 @@ public class MyService extends Service implements JSInterface.Callback {
 
     @Override
     public void onCreate() {
-        // TODO Auto-generated method stub
         super.onCreate();
-
+        bdd = new DBHelper(this);
 
         Log.d("Testing", "Service got created");
         Log.e("SERVICE", "launched");
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-            travianClient = new TravianClient("Doc Addict", "bogoss1994", url, prefs);
-
-
+            //travianClient = new TravianClient("Doc Addict", "bogoss1994", url, prefs);
+            travianClient = new TravianClientCommande("Doc Addict", "bogoss1994", url, prefs, bdd);
             //final WebView webView = ((WebView) findViewById(R.id.wvTest));
             webView = new WebView(this);
             webView.getSettings().setJavaScriptEnabled(true);
@@ -65,6 +68,7 @@ public class MyService extends Service implements JSInterface.Callback {
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
+        bdd.close();
         super.onDestroy();
     }
 

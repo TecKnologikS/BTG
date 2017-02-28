@@ -1,4 +1,4 @@
-package fr.tecknologiks.btg;
+package fr.tecknologiks.btg.classObject;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,6 +8,8 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import fr.tecknologiks.btg.MainActivity;
 
 /**
  * Created by robin on 11/22/2016.

@@ -11,6 +11,12 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
+import fr.tecknologiks.btg.classObject.Function;
+import fr.tecknologiks.btg.classObject.ID;
+import fr.tecknologiks.btg.classObject.Page;
+import fr.tecknologiks.btg.classObject.SubCommande;
+import fr.tecknologiks.btg.classObject.Villages;
+
 /**
  * Created by robin on 11/22/2016.
  */
@@ -106,7 +112,7 @@ public class TravianClient extends WebViewClient{
                 Pillage(view);
                 break;
             case Page.TROUPAGES:
-            case Page.TROUPAGES2:
+            //case Page.TROUPAGES2:
                 Troupages(view);
                 break;
             default:

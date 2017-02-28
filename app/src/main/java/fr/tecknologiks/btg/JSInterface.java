@@ -5,6 +5,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import fr.tecknologiks.btg.classObject.Function;
+import fr.tecknologiks.btg.classObject.ID;
+import fr.tecknologiks.btg.classObject.Villages;
+
 /**
  * Created by robin on 11/22/2016.
  */
