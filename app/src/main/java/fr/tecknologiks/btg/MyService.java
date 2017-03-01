@@ -79,7 +79,8 @@ public class MyService extends Service implements JSInterface.Callback {
 
             //travianClient = new TravianClient("Doc Addict", "bogoss1994", url, prefs);
             travianClient = new TravianClientCommande(prefs.getString("prefLOGIN", ""), prefs.getString("prefPWD", ""), prefs.getString("prefURL", ""), prefs, bdd);
-            //final WebView webView = ((WebView) findViewById(R.id.wvTest));
+            //final WebV
+        // iew webView = ((WebView) findViewById(R.id.wvTest));
             webView = new WebView(this);
             webView.getSettings().setJavaScriptEnabled(true);
             webView.addJavascriptInterface(new JSInterface(this, this), "Android");
@@ -98,6 +99,7 @@ public class MyService extends Service implements JSInterface.Callback {
     public void onDestroy() {
         Log.e("BTG", "dual stoppé");
         bdd.close();
+        stopForeground(true);
         super.onDestroy();
     }
 

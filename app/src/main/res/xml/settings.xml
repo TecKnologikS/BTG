@@ -13,10 +13,10 @@
             android:title="Password "
             android:summary=""
             android:key="prefPWD"/>
-        <EditTextPreference
+        <fr.tecknologiks.btg.classObject.IntPreference
             android:title="Interval minute  "
             android:summary="entre chaque connexion"
-            android:inputType="numberSigned"
+            android:numeric="integer"
             android:defaultValue="5"
             android:key="prefMinute"/>
     </PreferenceCategory>

@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
         pintent = PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0);
         alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         prefs.edit().putBoolean(TravianClient.LAUNCHED, true).commit();
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), prefs.getInt("prefMinute", 5) * 60000, pintent);
+        if (!prefs.getString("prefLOGIN", "").isEmpty() && !prefs.getString("prefPWD", "").isEmpty() && !prefs.getString("prefURL", "").isEmpty())
+            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), prefs.getInt("prefMinute", 5) * 60000, pintent);
         getCommande();
 
         a = new Adapteur(this, lstCommandes);
