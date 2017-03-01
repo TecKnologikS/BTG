@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Account" >
+        <EditTextPreference
+            android:title="URL  "
+            android:summary="avec http devant !"
+            android:key="prefURL"/>
+        <EditTextPreference
+            android:title="Login  "
+            android:summary=""
+            android:key="prefLOGIN"/>
+        <EditTextPreference
+            android:title="Password "
+            android:summary=""
+            android:key="prefPWD"/>
+        <EditTextPreference
+            android:title="Interval minute  "
+            android:summary="entre chaque connexion"
+            android:inputType="numberSigned"
+            android:defaultValue="5"
+            android:key="prefMinute"/>
+    </PreferenceCategory>
+</PreferenceScreen>

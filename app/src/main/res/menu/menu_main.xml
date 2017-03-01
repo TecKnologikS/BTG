@@ -7,4 +7,14 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_go"
+        android:orderInCategory="100"
+        android:title="GO DUAL !"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_stopit"
+        android:orderInCategory="100"
+        android:title="STOP DUAL !"
+        app:showAsAction="never" />
 </menu>

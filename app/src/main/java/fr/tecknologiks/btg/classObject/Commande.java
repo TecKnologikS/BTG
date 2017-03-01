@@ -22,6 +22,7 @@ public class Commande {
     private long lasttime = 0;
     private int village = 0; //0 --> Tous
     private int ID = 0;
+    private boolean actif = false;
     private ArrayList<String> lstArg = new ArrayList<>();
 
     public Commande() {     }
@@ -83,6 +84,28 @@ public class Commande {
         this.village = village;
     }
 
+    public boolean isActif() {
+        return actif;
+    }
+
+    public int getActif() {
+        if (actif)
+            return 1;
+        else
+            return 0;
+    }
+
+    public void setActif(boolean actif) {
+        this.actif = actif;
+    }
+
+    public void setActifInt(int actif) {
+        if (actif == 1)
+            this.actif = true;
+        else
+            this.actif = false;
+    }
+
     public ArrayList<SubCommande> generateSubCommande() {
 
         ArrayList<SubCommande> retour = new ArrayList<>();
@@ -128,6 +151,16 @@ public class Commande {
         ContentValues cv = new ContentValues();
         cv.put(CommandeEntry.COL_LAST_TIME, System.currentTimeMillis() + "");
         bdd.getWritableDatabase().update(CommandeEntry.TABLE_NAME, cv, CommandeEntry.COL_ID + " = ? ", new String[] {this.getID() + ""});
+    }
+
+    @Override
+    public String toString() {
+        return "action: " + this.action + " / " +
+                "info_comp: " + this.info_comp + " / " +
+                "actif: " + this.actif + " / " +
+                "minute: " + this.minute + " / " +
+                "lasttime: " + this.lasttime + " / " +
+                "village: " + this.village + "; ";
     }
 }
 

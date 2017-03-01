@@ -6,11 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.webkit.WebView;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import fr.tecknologiks.btg.bdd.DBHelper;
 import fr.tecknologiks.btg.classObject.Page;
@@ -29,28 +32,53 @@ public class MyService extends Service implements JSInterface.Callback {
     SharedPreferences prefs;
 
     public void Go() {
-        if (prefs.getBoolean(TravianClient.LAUNCHED, false)) {
-            Log.e("btg started", "");
+        if (!prefs.getString("prefLOGIN", "").isEmpty() &&
+                !prefs.getString("prefPWD", "").isEmpty() &&
+                !prefs.getString("prefURL", "").isEmpty()) {
+            Log.e("BTG", "dual relancé");
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             prefs.edit().putString("logPillage",  sdf.format(new Date(System.currentTimeMillis())) + " login " + "\n " + prefs.getString("logPillage", "").toString()).commit();
             webView.loadUrl(url + "/" + Page.LOGIN);
             travianClient.Reload();
             webView.setWebViewClient(travianClient);
+            showNotification("Le dual est en train de jouer :D", "Last Connexion : " + toMinute() + " ");
+            prefs.edit().putLong("LastConnexion", System.currentTimeMillis()).commit();
+
         }
+    }
+
+    private String toMinute() {
+        Timestamp stamp = new Timestamp(System.currentTimeMillis());
+        Date date = new Date(stamp.getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        //sdf.setTimeZone(TimeZone.getTimeZone("+1"));
+        String formattedDate = sdf.format(date);
+        return formattedDate;
+    }
+
+    private void showNotification(String title, String soustext)
+    {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(title)
+                        .setContentText(soustext)
+                        .setOngoing(true);
+
+        startForeground(1000,mBuilder.build());  // 1000 - is Id for the notification
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        bdd = new DBHelper(this);
+        bdd = new DBHelper(getApplicationContext());
 
-        Log.d("Testing", "Service got created");
-        Log.e("SERVICE", "launched");
+        Log.e("BTG", "dual lancé");
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+        url = prefs.getString("prefURL", "");
 
             //travianClient = new TravianClient("Doc Addict", "bogoss1994", url, prefs);
-            travianClient = new TravianClientCommande("Doc Addict", "bogoss1994", url, prefs, bdd);
+            travianClient = new TravianClientCommande(prefs.getString("prefLOGIN", ""), prefs.getString("prefPWD", ""), prefs.getString("prefURL", ""), prefs, bdd);
             //final WebView webView = ((WebView) findViewById(R.id.wvTest));
             webView = new WebView(this);
             webView.getSettings().setJavaScriptEnabled(true);
@@ -68,7 +96,7 @@ public class MyService extends Service implements JSInterface.Callback {
 
     @Override
     public void onDestroy() {
-        // TODO Auto-generated method stub
+        Log.e("BTG", "dual stoppé");
         bdd.close();
         super.onDestroy();
     }

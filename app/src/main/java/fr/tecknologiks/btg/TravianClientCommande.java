@@ -77,11 +77,12 @@ public class TravianClientCommande extends WebViewClient {
                 CommandeEntry.COL_ON_ATTACK,
                 CommandeEntry.COL_MINUTE,
                 CommandeEntry.COL_LAST_TIME,
-                CommandeEntry.COL_INFO_COMP
+                CommandeEntry.COL_INFO_COMP,
+                CommandeEntry.COL_ACTIF
         };
         Cursor cursor = bdd.getReadableDatabase().query(CommandeEntry.TABLE_NAME,
                 projection,
-                " 1=1 ",
+                null,
                 null, null, null, CommandeEntry.COL_ID + " ASC ");
         while(cursor.moveToNext()) {
             Commande tmp = new Commande();
@@ -92,8 +93,10 @@ public class TravianClientCommande extends WebViewClient {
             tmp.setVillage(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_VILLAGE)));
             tmp.setInfo_comp(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_INFO_COMP)));
             tmp.setLasttime(Long.parseLong(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_LAST_TIME))));
-            if ((tmp.getLasttime() + (60000 * tmp.getMinute())) < System.currentTimeMillis())
-                retour.add(tmp);
+            tmp.setActifInt(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ACTIF)));;
+            if (tmp.isActif())
+                if ((tmp.getLasttime() + (60000 * tmp.getMinute())) < System.currentTimeMillis())
+                    retour.add(tmp);
         }
         cursor.close();
 

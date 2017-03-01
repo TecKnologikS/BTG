@@ -22,7 +22,12 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyService"  android:enabled="true" ></service>
+        <service
+            android:name=".MyService"
+            android:enabled="true" />
+
+        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>

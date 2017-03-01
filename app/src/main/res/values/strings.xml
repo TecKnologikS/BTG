@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">BTG</string>
     <string name="action_settings">Settings</string>
+    <string-array name="action">
+        <item>PILLAGE</item>
+        <item>EVASION</item>
+        <item>TROUPE_CASERNE</item>
+        <item>TROUPE_ECURIE</item>
+    </string-array>
 </resources>

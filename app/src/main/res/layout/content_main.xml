@@ -16,13 +16,13 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/lstAction"
-        android:visibility="gone"></ListView>
+        android:id="@+id/lstAction"></ListView>
 
 
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/wvTest"></WebView>
+        android:id="@+id/wvTest"
+        android:visibility="gone"></WebView>
 
 </RelativeLayout>

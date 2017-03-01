@@ -18,6 +18,7 @@ public class CommandeContract {
         public static final String COL_MINUTE = "minute";
         public static final String COL_LAST_TIME = "lasttime";
         public static final String COL_VILLAGE = "village";
+        public static final String COL_ACTIF = "actif";
 
     }
 }
