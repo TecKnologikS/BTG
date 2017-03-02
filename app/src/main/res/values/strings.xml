@@ -6,5 +6,7 @@
         <item>EVASION</item>
         <item>TROUPE_CASERNE</item>
         <item>TROUPE_ECURIE</item>
+        <item>BUILDER GID</item>
+        <item>BUILDER ID</item>
     </string-array>
 </resources>

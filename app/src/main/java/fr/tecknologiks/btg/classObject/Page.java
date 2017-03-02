@@ -19,5 +19,9 @@ public class Page {
     public final static String DEFAULT = "";
     public final static String VILLAGE = "&newdid=";
     public final static String ALLSEE = "dorf3.php";
+    public final static String BUILDER = "build.php?tt=0&s=0";
+    public final static String GID = "&gid=";
+    public final static String ID = "&id=";
+
 
 }

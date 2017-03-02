@@ -114,13 +114,11 @@ public class Commande {
             case Action.PILLAGE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
                     retour.add(new SubCommande(1, Page.PILLAGE + Page.VILLAGE + this.village));
-                    retour.add(new SubCommande(1, Page.PILLAGE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.PILLAGE_SELECT) + argToFunction(ListeCommande.PILLAGE_CLICK)));
                 }
                 break;
             case Action.TROUPE_ECURIE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
-                    retour.add(new SubCommande(1, Page.TROUPAGES_ECURIE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(1, Page.TROUPAGES_ECURIE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
                 }
@@ -128,8 +126,19 @@ public class Commande {
             case Action.TROUPE_CASERNE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
                     retour.add(new SubCommande(1, Page.TROUPAGES_CASERNE + Page.VILLAGE + this.village));
-                    retour.add(new SubCommande(1, Page.TROUPAGES_CASERNE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
+                }
+                break;
+            case Action.BUILDER_GID:
+                if (this.village != 0 && !this.info_comp.isEmpty()) {
+                    retour.add(new SubCommande(1, Page.BUILDER + Page.VILLAGE + this.village + Page.GID + this.getInfo_comp()));
+                    retour.add(new SubCommande(2, ListeCommande.BUILDIT));
+                }
+                break;
+            case Action.BUILDER_ID:
+                if (this.village != 0 && !this.info_comp.isEmpty()) {
+                    retour.add(new SubCommande(1, Page.BUILDER + Page.VILLAGE + this.village + Page.ID + this.getInfo_comp()));
+                    retour.add(new SubCommande(2, ListeCommande.BUILDIT));
                 }
                 break;
         }

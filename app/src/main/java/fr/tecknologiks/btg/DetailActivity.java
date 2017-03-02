@@ -118,6 +118,14 @@ public class DetailActivity extends AppCompatActivity {
             }
 
         });
+
+        edtInfoComp.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //TODO: aide to choosez
+                return false;
+            }
+        });
     }
 
     public void SaveAndQuit() {

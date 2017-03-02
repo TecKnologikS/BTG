@@ -9,4 +9,5 @@ public class ListeCommande {
     public final static String PILLAGE_CLICK = "document.getElementById('list%1%').children[0].submit();";
     public final static String TROUPAGE = "document.getElementsByName('t%1%')[0].value = parseInt(parseInt(document.getElementsByName('t%1%')[0].getParent('div.details').children[5].innerText) / 2);";
     public final static String TROUPAGE_CLICK = "document.snd.s1.click();";
+    public final static String BUILDIT = "document.getElementsByClassName('green build')[0].click();";
 }
