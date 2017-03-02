@@ -114,17 +114,20 @@ public class Commande {
             case Action.PILLAGE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
                     retour.add(new SubCommande(1, Page.PILLAGE + Page.VILLAGE + this.village));
+                    retour.add(new SubCommande(1, Page.PILLAGE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.PILLAGE_SELECT) + argToFunction(ListeCommande.PILLAGE_CLICK)));
                 }
                 break;
             case Action.TROUPE_ECURIE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
                     retour.add(new SubCommande(1, Page.TROUPAGES_ECURIE + Page.VILLAGE + this.village));
+                    retour.add(new SubCommande(1, Page.TROUPAGES_ECURIE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
                 }
                 break;
             case Action.TROUPE_CASERNE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
+                    retour.add(new SubCommande(1, Page.TROUPAGES_CASERNE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(1, Page.TROUPAGES_CASERNE + Page.VILLAGE + this.village));
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
                 }

@@ -134,7 +134,7 @@ public class TravianClientCommande extends WebViewClient {
                 Ressource(view);
                 ListeVillage(view);
                 DoAction(view);
-                view.loadUrl(this.url + "/" + Page.ALLSEE);
+                //view.loadUrl(this.url + "/" + Page.ALLSEE);
                 break;
             case Page.LOGIN:
                 Login(view);
