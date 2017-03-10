@@ -11,5 +11,6 @@ public class Action {
     public static final int TROUPE_ECURIE =     4;
     public static final int BUILDER_GID =       5;
     public static final int BUILDER_ID =        6;
+    public static final int TROUPE_ATELIER =    7;
 
 }

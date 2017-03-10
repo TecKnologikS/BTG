@@ -98,6 +98,8 @@ public class DetailActivity extends AppCompatActivity {
                 swActif.setChecked(c.isActif());
                 Log.e("Commande", c.toString());
             }
+        } else {
+            c = new Commande();
         }
 
 

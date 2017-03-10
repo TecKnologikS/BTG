@@ -66,6 +66,9 @@ public class Adapteur extends BaseAdapter {
             case Action.TROUPE_CASERNE:
                 tmp = "Troupe caserne village " + commandes.get(position).getVillage();
                 break;
+            case Action.TROUPE_ATELIER:
+                tmp = "Troupe atelier village " + commandes.get(position).getVillage();
+                break;
         }
         ((TextView)convertView.findViewById(R.id.tvNom)).setText(tmp);
         return convertView;

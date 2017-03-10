@@ -129,6 +129,12 @@ public class Commande {
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
                 }
                 break;
+            case Action.TROUPE_ATELIER:
+                if (this.village != 0 && !this.info_comp.isEmpty()) {
+                    retour.add(new SubCommande(1, Page.TROUPAGES_ATELIER + Page.VILLAGE + this.village));
+                    retour.add(new SubCommande(2, argToFunction(ListeCommande.TROUPAGE) + ListeCommande.TROUPAGE_CLICK));
+                }
+                break;
             case Action.BUILDER_GID:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
                     retour.add(new SubCommande(1, Page.BUILDER + Page.VILLAGE + this.village + Page.GID + this.getInfo_comp()));

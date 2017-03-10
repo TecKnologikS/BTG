@@ -85,6 +85,7 @@ public class MyService extends Service implements JSInterface.Callback {
             webView.getSettings().setJavaScriptEnabled(true);
             webView.addJavascriptInterface(new JSInterface(this, this), "Android");
             webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+            webView.getSettings().setDomStorageEnabled(true);
             //Toast.makeText(this, "ServiceClass.onCreate()", Toast.LENGTH_LONG).show();
 
     }

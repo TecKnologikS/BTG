@@ -14,8 +14,9 @@ public class Page {
     public final static String PILLAGE_DIRECT = "build.php?id=39&tt=99&newdid=101";//http://ts19.travian.fr/build.php?newdid=44460&id=39&tt=99&gid=16
     public final static String PILLAGE2 = "build.php?gid=16&tt=99";
     public final static String TROUPAGES = "build.php?id=23&newdid=101";//http://ts19.travian.fr/build.php?newdid=44460&id=39&tt=99&gid=16
-    public final static String TROUPAGES_CASERNE = "build.php?id=23";
-    public final static String TROUPAGES_ECURIE = "build.php?id=25";
+    public final static String TROUPAGES_CASERNE = "build.php?gid=19";
+    public final static String TROUPAGES_ECURIE = "build.php?gid=20";
+    public final static String TROUPAGES_ATELIER = "build.php?gid=21";
     public final static String DEFAULT = "";
     public final static String VILLAGE = "&newdid=";
     public final static String ALLSEE = "dorf3.php";

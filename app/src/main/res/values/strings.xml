@@ -8,5 +8,6 @@
         <item>TROUPE_ECURIE</item>
         <item>BUILDER GID</item>
         <item>BUILDER ID</item>
+        <item>TROUPE_ATELIER</item>
     </string-array>
 </resources>
