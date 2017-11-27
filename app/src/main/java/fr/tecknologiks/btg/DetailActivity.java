@@ -121,6 +121,19 @@ public class DetailActivity extends AppCompatActivity {
 
         });
 
+        ((Button)findViewById(R.id.btnSuppr)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ID != -1) {
+                    int count = bdd.getWritableDatabase().delete(CommandeEntry.TABLE_NAME, CommandeEntry.COL_ID + " = " + Integer.toString(ID), null);
+                    Toast.makeText(DetailActivity.this, "resultat update = " + count, Toast.LENGTH_SHORT).show();
+                    if (count == 1)
+                        finish();
+                }
+            }
+
+        });
+
         edtInfoComp.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
