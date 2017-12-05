@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        prefs.edit().putBoolean(TravianClient.LAUNCHED, false).commit();
         alarm.cancel(pintent);
     }
 
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         pintent = PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0);
         alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        prefs.edit().putBoolean(TravianClient.LAUNCHED, true).commit();
         if (!prefs.getString("prefLOGIN", "").isEmpty() && !prefs.getString("prefPWD", "").isEmpty() && !prefs.getString("prefURL", "").isEmpty())
             alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), prefs.getInt("prefMinute", 5) * 60000, pintent);
         getCommande();
@@ -86,62 +84,35 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
                 startActivity((new Intent(MainActivity.this, DetailActivity.class)).putExtra("ID", lstCommandes.get(position).getID()));
             }
         });
-
-
-
-/*
-
-                DBHelper bdd = new DBHelper(this);
-        TravianClientCommande travianClient = new TravianClientCommande(prefs.getString("prefLOGIN", ""), prefs.getString("prefPWD", ""), prefs.getString("prefURL", ""), PreferenceManager.getDefaultSharedPreferences(this), bdd);
-
-
-        WebView webView = ((WebView) findViewById(R.id.wvTest));
-        //final WebView webView = new WebView(this);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.addJavascriptInterface(new JSInterface(this, this), "Android");
-        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        //WebView webView = new WebView(this);
-        //webView.loadUrl(url + "/" + Page.DORF1);
-        webView.loadUrl("https://ts19.travian.fr" + "/" + Page.LOGIN);
-        webView.setWebViewClient(travianClient);*/
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(MainActivity.this, SettingActivity.class));
-        }
-
-        if (id == R.id.action_stopit) {
-            stopService(new Intent(MainActivity.this, MyService.class));
-            alarm.cancel(pintent);
-        }
-
-        if (id == R.id.action_go) {
-            startService(new Intent(MainActivity.this, MyService.class));
-            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), prefs.getInt("prefMinute", 5)*60000, pintent);
+        switch(item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                break;
+            case R.id.action_stopit:
+                stopService(new Intent(MainActivity.this, MyService.class));
+                alarm.cancel(pintent);
+                break;
+            case R.id.action_go:
+                startService(new Intent(MainActivity.this, MyService.class));
+                alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), prefs.getInt("prefMinute", 5)*60000, pintent);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onEvasionAdded() {
-
-    }
+    public void onEvasionAdded() {}
 
     public void getCommande() {
         ArrayList<Commande> retour = new ArrayList<>();

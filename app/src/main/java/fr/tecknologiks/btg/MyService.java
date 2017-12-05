@@ -92,7 +92,6 @@ public class MyService extends Service implements JSInterface.Callback, TravianC
 
     @Override
     public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -106,9 +105,7 @@ public class MyService extends Service implements JSInterface.Callback, TravianC
 
     @Override
     public void onStart(Intent intent, int startId) {
-        // TODO Auto-generated method stub
         super.onStart(intent, startId);
-        //Toast.makeText(this, "ServiceClass.onStart()", Toast.LENGTH_LONG).show();
         Log.d("Testing", "Service got started");
         Go();
     }

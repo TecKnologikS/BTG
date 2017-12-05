@@ -114,7 +114,7 @@ public class Commande {
         switch(this.getAction()) {
             case Action.PILLAGE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
-                    retour.add(new SubCommande(1, Page.PILLAGE + Page.VILLAGE + this.village));
+                    retour.add(new SubCommande(1, Page.PILLAGE));
                     retour.add(new SubCommande(2, argToFunction(ListeCommande.PILLAGE_OPEN) + "setTimeout(function() { " + argToFunction(ListeCommande.PILLAGE_SELECT) + argToFunction(ListeCommande.PILLAGE_CLICK) + "}  ,2000);"));
                 }
                 break;
