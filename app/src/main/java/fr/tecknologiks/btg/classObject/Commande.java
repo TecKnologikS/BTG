@@ -1,6 +1,7 @@
 package fr.tecknologiks.btg.classObject;
 
 import android.content.ContentValues;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -114,7 +115,7 @@ public class Commande {
             case Action.PILLAGE:
                 if (this.village != 0 && !this.info_comp.isEmpty()) {
                     retour.add(new SubCommande(1, Page.PILLAGE + Page.VILLAGE + this.village));
-                    retour.add(new SubCommande(2, argToFunction(ListeCommande.PILLAGE_SELECT) + argToFunction(ListeCommande.PILLAGE_CLICK)));
+                    retour.add(new SubCommande(2, argToFunction(ListeCommande.PILLAGE_OPEN) + "setTimeout(function() { " + argToFunction(ListeCommande.PILLAGE_SELECT) + argToFunction(ListeCommande.PILLAGE_CLICK) + "}  ,2000);"));
                 }
                 break;
             case Action.TROUPE_ECURIE:
@@ -160,6 +161,7 @@ public class Commande {
             }
         } else {
             commande = commande.replace("%1%", this.info_comp);
+            Log.e("commande", commande);
         }
 
         return commande;

@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
 
 
 
-
 /*
+
                 DBHelper bdd = new DBHelper(this);
         TravianClientCommande travianClient = new TravianClientCommande(prefs.getString("prefLOGIN", ""), prefs.getString("prefPWD", ""), prefs.getString("prefURL", ""), PreferenceManager.getDefaultSharedPreferences(this), bdd);
 
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         //WebView webView = new WebView(this);
         //webView.loadUrl(url + "/" + Page.DORF1);
-        webView.loadUrl("http://ts20.travian.fr" + "/" + Page.LOGIN);
+        webView.loadUrl("https://ts19.travian.fr" + "/" + Page.LOGIN);
         webView.setWebViewClient(travianClient);*/
     }
 

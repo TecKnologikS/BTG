@@ -22,7 +22,7 @@ import fr.tecknologiks.btg.classObject.Page;
  * Created by robin on 11/22/2016.
  */
 
-public class MyService extends Service implements JSInterface.Callback {
+public class MyService extends Service implements JSInterface.Callback, TravianClientCommande.Callback {
 
     TravianClientCommande travianClient;
     private String url = "http://ts20.travian.fr";
@@ -78,7 +78,7 @@ public class MyService extends Service implements JSInterface.Callback {
         url = prefs.getString("prefURL", "");
 
             //travianClient = new TravianClient("Doc Addict", "bogoss1994", url, prefs);
-            travianClient = new TravianClientCommande(prefs.getString("prefLOGIN", ""), prefs.getString("prefPWD", ""), prefs.getString("prefURL", ""), prefs, bdd);
+            travianClient = new TravianClientCommande(prefs.getString("prefLOGIN", ""), prefs.getString("prefPWD", ""), prefs.getString("prefURL", ""), prefs, bdd, this);
             //final WebV
         // iew webView = ((WebView) findViewById(R.id.wvTest));
             webView = new WebView(this);
@@ -126,5 +126,11 @@ public class MyService extends Service implements JSInterface.Callback {
             }
         };
         mainHandler.post(myRunnable);
+    }
+
+    @Override
+    public void onLoginErrorShowError() {
+        showNotification("BTG", "Login error !");
+        stopForeground(false);
     }
 }

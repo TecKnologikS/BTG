@@ -42,8 +42,11 @@ public class TravianClientCommande extends WebViewClient {
     public static ArrayList<SubCommande> lstAction = new ArrayList<>();
     boolean ressInit = false;
     boolean villageInit = false;
+    private Callback callback;
 
-
+    public interface Callback {
+        void onLoginErrorShowError();
+    }
 
     public TravianClientCommande() {
         this.user = "";
@@ -51,7 +54,7 @@ public class TravianClientCommande extends WebViewClient {
         this.url = "";
     }
 
-    public TravianClientCommande(String _user, String _mdp, String _url, SharedPreferences _prefs, DBHelper _bdd) {
+    public TravianClientCommande(String _user, String _mdp, String _url, SharedPreferences _prefs, DBHelper _bdd, Callback callback) {
         this.user = _user;
         this.mdp = _mdp;
         this.url = _url;
@@ -60,6 +63,7 @@ public class TravianClientCommande extends WebViewClient {
         this.lstCommande = getCommande();
         if (lstCommande.size() > 0)
             lstAction = lstCommande.get(0).generateSubCommande();
+        this.callback = callback;
     }
 
     public void Reload() {
@@ -137,7 +141,10 @@ public class TravianClientCommande extends WebViewClient {
                 //view.loadUrl(this.url + "/" + Page.ALLSEE);
                 break;
             case Page.LOGIN:
-                Login(view);
+                if (previous == Page.LOGIN)
+                    this.callback.onLoginErrorShowError();
+                else
+                    Login(view);
                 break;
             default:
                 DoAction(view);
