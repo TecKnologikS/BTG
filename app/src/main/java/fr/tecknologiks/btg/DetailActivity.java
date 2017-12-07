@@ -4,8 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,9 +16,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import fr.tecknologiks.btg.bdd.CommandeContract;
+import fr.tecknologiks.btg.DAO.CommandeDAO;
 import fr.tecknologiks.btg.bdd.DBHelper;
 import fr.tecknologiks.btg.classObject.Commande;
+import fr.tecknologiks.btg.classObject.Compte;
+import fr.tecknologiks.btg.DAO.CompteDAO;
 
 import static fr.tecknologiks.btg.bdd.CommandeContract.*;
 
@@ -28,10 +30,12 @@ public class DetailActivity extends AppCompatActivity {
     DBHelper bdd;
     Commande c;
     Spinner spnAction;
+    Spinner spnCompte;
     EditText edtIDVillage;
     EditText edtInfoComp;
     EditText edtTime;
     Switch swActif;
+    ArrayList<Compte> lstComptes = new ArrayList<>();
 
 
     @Override
@@ -40,7 +44,10 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         bdd = new DBHelper(getApplicationContext());
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         spnAction =         (Spinner)   findViewById(R.id.spnAction);
+        spnCompte =         (Spinner)   findViewById(R.id.spnCompte);
         edtIDVillage =      (EditText)  findViewById(R.id.edtIDVillage);
         edtInfoComp =       (EditText)  findViewById(R.id.edtInfoComp);
         edtTime =           (EditText)  findViewById(R.id.edtTime);
@@ -51,47 +58,18 @@ public class DetailActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnAction.setAdapter(adapter);
 
+        lstComptes = CompteDAO.getListComptes(bdd);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, CompteDAO.getShowedName(lstComptes));
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+        spnCompte.setAdapter(spinnerArrayAdapter);
+
         ID = getIntent().getExtras().getInt("ID");
 
         if (ID != -1) {
-            ArrayList<Commande> retour = new ArrayList<>();
-            String[] projection = {
-                    CommandeEntry.COL_ID,
-                    CommandeEntry.COL_ACTION,
-                    CommandeEntry.COL_VILLAGE,
-                    CommandeEntry.COL_ON_ATTACK,
-                    CommandeEntry.COL_MINUTE,
-                    CommandeEntry.COL_LAST_TIME,
-                    CommandeEntry.COL_INFO_COMP,
-                    CommandeEntry.COL_ACTIF
-            };
-
-            String whereClause = " " + CommandeEntry.COL_ID + " = ? ";
-            String[] whereArgs = new String[] {
-                    "" + ID + ""
-            };
-
-            Cursor cursor = bdd.getReadableDatabase().query(CommandeEntry.TABLE_NAME,
-                    projection,
-                    null,
-                    null, null, null, CommandeEntry.COL_ID + " ASC ");
-            while(cursor.moveToNext()) {
-                if (cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ID)) == ID) {
-                    c = new Commande();
-                    c.setID(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ID)));
-                    c.setAction(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ACTION)));
-                    c.setMinute(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_MINUTE)));
-                    c.setOnAttack(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_ON_ATTACK))));
-                    c.setVillage(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_VILLAGE)));
-                    c.setInfo_comp(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_INFO_COMP)));
-                    c.setLasttime(Long.parseLong(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_LAST_TIME))));
-                    c.setActifInt(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ACTIF)));
-                    break;
-                }
-            }
-            cursor.close();
+            c = CommandeDAO.getCommandeById(bdd, ID);
             if (c != null) {
                 spnAction.setSelection(c.getAction() - 1);
+                spnCompte.setSelection(CompteDAO.getPositionOfCompte(c.getIdCompte(), lstComptes));
                 edtIDVillage.setText(Integer.toString(c.getVillage()));
                 edtInfoComp.setText(c.getInfo_comp());
                 edtTime.setText(Integer.toString(c.getMinute()));
@@ -111,6 +89,7 @@ public class DetailActivity extends AppCompatActivity {
                 if (edtTime.getText().toString().isEmpty())
                     edtTime.setText("0");
                 c.setAction(spnAction.getSelectedItemPosition() + 1);
+                c.setIdCompte(lstComptes.get(spnCompte.getSelectedItemPosition()).getId());
                 c.setVillage(Integer.parseInt(edtIDVillage.getText().toString()));
                 c.setMinute(Integer.parseInt(edtTime.getText().toString()));
                 c.setInfo_comp(edtInfoComp.getText().toString());
@@ -146,7 +125,9 @@ public class DetailActivity extends AppCompatActivity {
     public void SaveAndQuit() {
         if (ID != -1){
             ContentValues cv = new ContentValues();
+            cv.put(CommandeEntry.COL_ACTION, c.getAction());
             cv.put(CommandeEntry.COL_VILLAGE, c.getVillage());
+            cv.put(CommandeEntry.COL_ID_COMPTE, c.getIdCompte());
             cv.put(CommandeEntry.COL_INFO_COMP, c.getInfo_comp());
             cv.put(CommandeEntry.COL_MINUTE, c.getMinute());
             cv.put(CommandeEntry.COL_ACTIF, c.getActif());
@@ -163,6 +144,7 @@ public class DetailActivity extends AppCompatActivity {
         } else {
 
             ContentValues cv = new ContentValues();
+            cv.put(CommandeEntry.COL_ID_COMPTE, c.getIdCompte());
             cv.put(CommandeEntry.COL_ACTION, c.getAction());
             cv.put(CommandeEntry.COL_ON_ATTACK, 0);
             cv.put(CommandeEntry.COL_LAST_TIME, 0);
@@ -174,5 +156,16 @@ public class DetailActivity extends AppCompatActivity {
             bdd.getWritableDatabase().insert(CommandeEntry.TABLE_NAME, null, cv);
         }
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

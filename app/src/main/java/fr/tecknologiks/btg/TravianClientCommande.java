@@ -9,9 +9,12 @@ import android.webkit.WebViewClient;
 import java.util.ArrayList;
 import java.util.Map;
 
+import fr.tecknologiks.btg.DAO.CommandeDAO;
+import fr.tecknologiks.btg.DAO.CompteDAO;
 import fr.tecknologiks.btg.bdd.CommandeContract;
 import fr.tecknologiks.btg.bdd.DBHelper;
 import fr.tecknologiks.btg.classObject.Commande;
+import fr.tecknologiks.btg.classObject.Compte;
 import fr.tecknologiks.btg.classObject.Function;
 import fr.tecknologiks.btg.classObject.ID;
 import fr.tecknologiks.btg.classObject.Page;
@@ -38,6 +41,7 @@ public class TravianClientCommande extends WebViewClient {
     private SharedPreferences prefs;
     public static final String LAUNCHED = "service_lancer";
     public static final String TIME = "service_interval";
+    public static ArrayList<Compte> lstComptes = new ArrayList<>();
     public static ArrayList<Commande> lstCommande = new ArrayList<>();
     public static ArrayList<SubCommande> lstAction = new ArrayList<>();
     boolean ressInit = false;
@@ -60,52 +64,22 @@ public class TravianClientCommande extends WebViewClient {
         this.url = _url;
         this.prefs = _prefs;
         this.bdd = _bdd;
-        this.lstCommande = getCommande();
+        this.lstComptes = CompteDAO.getListComptes(bdd);
+        if (lstComptes.size() > 0)
+            this.lstCommande = CommandeDAO.getCommandeByIdCompte(bdd, lstComptes.get(0).getId());
         if (lstCommande.size() > 0)
             lstAction = lstCommande.get(0).generateSubCommande();
         this.callback = callback;
     }
 
     public void Reload() {
-        this.lstCommande = getCommande();
+        if (lstComptes.size() > 0)
+            this.lstCommande = CommandeDAO.getCommandeByIdCompte(bdd, lstComptes.get(0).getId());
         if (lstCommande.size() > 0)
             lstAction = lstCommande.get(0).generateSubCommande();
     }
 
-    public ArrayList<Commande> getCommande() {
-        ArrayList<Commande> retour = new ArrayList<>();
-        String[] projection = {
-                CommandeEntry.COL_ID,
-                CommandeEntry.COL_ACTION,
-                CommandeEntry.COL_VILLAGE,
-                CommandeEntry.COL_ON_ATTACK,
-                CommandeEntry.COL_MINUTE,
-                CommandeEntry.COL_LAST_TIME,
-                CommandeEntry.COL_INFO_COMP,
-                CommandeEntry.COL_ACTIF
-        };
-        Cursor cursor = bdd.getReadableDatabase().query(CommandeEntry.TABLE_NAME,
-                projection,
-                null,
-                null, null, null, CommandeEntry.COL_ID + " ASC ");
-        while(cursor.moveToNext()) {
-            Commande tmp = new Commande();
-            tmp.setID(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ID)));
-            tmp.setAction(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ACTION)));
-            tmp.setMinute(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_MINUTE)));
-            tmp.setOnAttack(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_ON_ATTACK))));
-            tmp.setVillage(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_VILLAGE)));
-            tmp.setInfo_comp(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_INFO_COMP)));
-            tmp.setLasttime(Long.parseLong(cursor.getString(cursor.getColumnIndex(CommandeEntry.COL_LAST_TIME))));
-            tmp.setActifInt(cursor.getInt(cursor.getColumnIndex(CommandeEntry.COL_ACTIF)));;
-            if (tmp.isActif())
-                if ((tmp.getLasttime() + (60000 * tmp.getMinute())) < System.currentTimeMillis())
-                    retour.add(tmp);
-        }
-        cursor.close();
 
-        return retour;
-    }
 
     public void onPageFinished(WebView view, String url) {
 

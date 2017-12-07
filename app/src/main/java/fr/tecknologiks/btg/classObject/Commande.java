@@ -23,11 +23,19 @@ public class Commande {
     private long lasttime = 0;
     private int village = 0; //0 --> Tous
     private int ID = 0;
+    private int IdCompte = 0;
     private boolean actif = false;
     private ArrayList<String> lstArg = new ArrayList<>();
 
     public Commande() {     }
 
+    public int getIdCompte() {
+        return IdCompte;
+    }
+
+    public void setIdCompte(int idCompte) {
+        IdCompte = idCompte;
+    }
 
     public int getID() {
         return ID;

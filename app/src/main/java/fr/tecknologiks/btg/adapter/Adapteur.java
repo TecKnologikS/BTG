@@ -1,4 +1,4 @@
-package fr.tecknologiks.btg;
+package fr.tecknologiks.btg.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import fr.tecknologiks.btg.R;
 import fr.tecknologiks.btg.classObject.Action;
 import fr.tecknologiks.btg.classObject.Commande;
 

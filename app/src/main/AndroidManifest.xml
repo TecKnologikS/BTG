@@ -26,8 +26,10 @@
             android:name=".MyService"
             android:enabled="true" />
 
-        <activity android:name=".DetailActivity"></activity>
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".DetailActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".CompteActivity" />
+        <activity android:name=".DetailCompteActivity"></activity>
     </application>
 
 </manifest>
