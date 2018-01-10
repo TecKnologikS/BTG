@@ -28,22 +28,24 @@ public class MyService extends Service implements JSInterface.Callback, TravianC
     private String url = "http://ts20.travian.fr";
     WebView webView;
     DBHelper bdd;
+    boolean forceStop = false;
 
     SharedPreferences prefs;
 
     public void Go() {
-        if (!prefs.getString("prefLOGIN", "").isEmpty() &&
-                !prefs.getString("prefPWD", "").isEmpty() &&
-                !prefs.getString("prefURL", "").isEmpty()) {
+        if (!forceStop) {
             Log.e("BTG", "dual relancé");
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
             prefs.edit().putString("logPillage",  sdf.format(new Date(System.currentTimeMillis())) + " login " + "\n " + prefs.getString("logPillage", "").toString()).commit();
-            webView.loadUrl(url + "/" + Page.LOGIN);
             travianClient.Reload();
-            webView.setWebViewClient(travianClient);
-            showNotification("Le dual est en train de jouer :D", "Last Connexion : " + toMinute() + " ");
+            if (travianClient.hasActionToDo())  {
+                webView.loadUrl(travianClient.getUrl() + "/" + Page.LOGIN);
+                webView.setWebViewClient(travianClient);
+                showNotification("Le dual est en train de jouer :D", "Last Connexion : " + toMinute() + " ");
+            } else {
+                showNotification("Le dual n'as rien a faire .... ", "Last Connexion : " + toMinute() + " ");
+            }
             prefs.edit().putLong("LastConnexion", System.currentTimeMillis()).commit();
-
         }
     }
 
@@ -73,19 +75,16 @@ public class MyService extends Service implements JSInterface.Callback, TravianC
         super.onCreate();
         bdd = new DBHelper(getApplicationContext());
 
-        Log.e("BTG", "dual lancé");
+        Log.e("BTG", "dual created");
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         url = prefs.getString("prefURL", "");
 
-            //travianClient = new TravianClient("Doc Addict", "bogoss1994", url, prefs);
-            travianClient = new TravianClientCommande(prefs.getString("prefLOGIN", ""), prefs.getString("prefPWD", ""), prefs.getString("prefURL", ""), prefs, bdd, this);
-            //final WebV
-        // iew webView = ((WebView) findViewById(R.id.wvTest));
-            webView = new WebView(this);
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.addJavascriptInterface(new JSInterface(this, this), "Android");
-            webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-            webView.getSettings().setDomStorageEnabled(true);
+        travianClient = new TravianClientCommande(prefs, bdd, this);
+        webView = new WebView(this);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.addJavascriptInterface(new JSInterface(this, this), "Android");
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        webView.getSettings().setDomStorageEnabled(true);
             //Toast.makeText(this, "ServiceClass.onCreate()", Toast.LENGTH_LONG).show();
 
     }
@@ -127,7 +126,10 @@ public class MyService extends Service implements JSInterface.Callback, TravianC
 
     @Override
     public void onLoginErrorShowError() {
+        Log.e("BTG", "Login error !");
+        this.forceStop = true;
         showNotification("BTG", "Login error !");
         stopForeground(false);
+        //stopSelf();
     }
 }

@@ -20,10 +20,13 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import fr.tecknologiks.btg.DAO.CommandeDAO;
+import fr.tecknologiks.btg.DAO.CompteDAO;
 import fr.tecknologiks.btg.adapter.Adapteur;
 import fr.tecknologiks.btg.bdd.CommandeContract;
 import fr.tecknologiks.btg.bdd.DBHelper;
 import fr.tecknologiks.btg.classObject.Commande;
+import fr.tecknologiks.btg.classObject.Compte;
 
 public class MainActivity extends AppCompatActivity  implements JSInterface.Callback {
     AlarmManager alarm;
@@ -32,13 +35,16 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
     Adapteur a;
     ListView lvCommande;
     ArrayList<Commande> lstCommandes = new ArrayList<>();
+    ArrayList<Compte>   lstComptes = new ArrayList<>();
     DBHelper bdd;
 
     @Override
     protected void onResume() {
         super.onResume();
         lstCommandes.clear();
-        getCommande();
+        lstCommandes.clear();
+        getComptes();
+        getCommandes();
         a.notifyDataSetChanged();
     }
 
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         bdd = new DBHelper(getApplicationContext());
@@ -68,7 +75,8 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
         alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         if (!prefs.getString("prefLOGIN", "").isEmpty() && !prefs.getString("prefPWD", "").isEmpty() && !prefs.getString("prefURL", "").isEmpty())
             alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(), prefs.getInt("prefMinute", 5) * 60000, pintent);
-        getCommande();
+        getComptes();
+        getCommandes();
 
         a = new Adapteur(this, lstCommandes);
         lvCommande = (ListView)findViewById(R.id.lstAction);
@@ -112,36 +120,17 @@ public class MainActivity extends AppCompatActivity  implements JSInterface.Call
     @Override
     public void onEvasionAdded() {}
 
-    public void getCommande() {
-        ArrayList<Commande> retour = new ArrayList<>();
-        String[] projection = {
-                CommandeContract.CommandeEntry.COL_ID,
-                CommandeContract.CommandeEntry.COL_ACTION,
-                CommandeContract.CommandeEntry.COL_VILLAGE,
-                CommandeContract.CommandeEntry.COL_ON_ATTACK,
-                CommandeContract.CommandeEntry.COL_MINUTE,
-                CommandeContract.CommandeEntry.COL_LAST_TIME,
-                CommandeContract.CommandeEntry.COL_INFO_COMP,
-                CommandeContract.CommandeEntry.COL_ACTIF
-        };
-        Cursor cursor = bdd.getReadableDatabase().query(CommandeContract.CommandeEntry.TABLE_NAME,
-                projection,
-                " 1=1 ",
-                null, null, null, CommandeContract.CommandeEntry.COL_ID + " ASC ");
-        while(cursor.moveToNext()) {
-            Commande tmp = new Commande();
-            tmp.setID(cursor.getInt(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_ID)));
-            tmp.setAction(cursor.getInt(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_ACTION)));
-            tmp.setMinute(cursor.getInt(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_MINUTE)));
-            tmp.setOnAttack(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_ON_ATTACK))));
-            tmp.setVillage(cursor.getInt(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_VILLAGE)));
-            tmp.setInfo_comp(cursor.getString(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_INFO_COMP)));
-            tmp.setLasttime(Long.parseLong(cursor.getString(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_LAST_TIME))));
-            tmp.setActifInt(cursor.getInt(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_ACTIF)));
-            retour.add(tmp);
+    public void getCommandes() {
+        for(int i = 0; i < lstComptes.size(); i++) {
+            ArrayList<Commande> tmp = CommandeDAO.getAllCommandeByIdCompte(bdd, lstComptes.get(i).getId(), false);
+            for (int j = 0; j < tmp.size(); j++) {
+                tmp.get(j).setCompte(lstComptes.get(i).getLogin());
+            }
+            lstCommandes.addAll(tmp);
         }
-        cursor.close();
+    }
 
-        lstCommandes.addAll(retour);
+    public void getComptes() {
+        this.lstComptes = CompteDAO.getListComptes(bdd);
     }
 }

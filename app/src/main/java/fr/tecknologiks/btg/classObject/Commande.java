@@ -16,6 +16,7 @@ import static fr.tecknologiks.btg.bdd.CommandeContract.*;
 
 public class Commande {
 
+    private String compte = "";
     private int action = 0;
     private String info_comp = "";
     private boolean onAttack = false;
@@ -31,6 +32,14 @@ public class Commande {
 
     public int getIdCompte() {
         return IdCompte;
+    }
+
+    public String getCompte() {
+        return compte;
+    }
+
+    public void setCompte(String compte) {
+        this.compte = compte;
     }
 
     public void setIdCompte(int idCompte) {
@@ -156,6 +165,12 @@ public class Commande {
                     retour.add(new SubCommande(2, ListeCommande.BUILDIT));
                 }
                 break;
+
+            case Action.VERIF_INCOMMING_ATTACK:
+                if (this.village != 0 && !this.info_comp.isEmpty()) {
+                    retour.add(new SubCommande(1, Page.DORF1));
+                }
+                break;
         }
 
 
@@ -184,7 +199,8 @@ public class Commande {
     @Override
     public String toString() {
         return "action: " + this.action + " / " +
-                "info_comp: " + this.info_comp + " / " +
+               "compte: " + this.compte + " / " +
+               "info_comp: " + this.info_comp + " / " +
                 "actif: " + this.actif + " / " +
                 "minute: " + this.minute + " / " +
                 "lasttime: " + this.lasttime + " / " +

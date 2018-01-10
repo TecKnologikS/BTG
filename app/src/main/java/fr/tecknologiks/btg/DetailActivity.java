@@ -1,9 +1,8 @@
 package fr.tecknologiks.btg;
 
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,25 +16,25 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import fr.tecknologiks.btg.DAO.CommandeDAO;
+import fr.tecknologiks.btg.DAO.CompteDAO;
 import fr.tecknologiks.btg.bdd.DBHelper;
 import fr.tecknologiks.btg.classObject.Commande;
 import fr.tecknologiks.btg.classObject.Compte;
-import fr.tecknologiks.btg.DAO.CompteDAO;
 
-import static fr.tecknologiks.btg.bdd.CommandeContract.*;
+import static fr.tecknologiks.btg.bdd.CommandeContract.CommandeEntry;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private int ID = -1;
     DBHelper bdd;
     Commande c;
-    Spinner spnAction;
-    Spinner spnCompte;
+    Spinner  spnAction;
+    Spinner  spnCompte;
     EditText edtIDVillage;
     EditText edtInfoComp;
     EditText edtTime;
-    Switch swActif;
+    Switch   swActif;
     ArrayList<Compte> lstComptes = new ArrayList<>();
+    private int ID = -1;
 
 
     @Override
@@ -46,20 +45,20 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        spnAction =         (Spinner)   findViewById(R.id.spnAction);
-        spnCompte =         (Spinner)   findViewById(R.id.spnCompte);
-        edtIDVillage =      (EditText)  findViewById(R.id.edtIDVillage);
-        edtInfoComp =       (EditText)  findViewById(R.id.edtInfoComp);
-        edtTime =           (EditText)  findViewById(R.id.edtTime);
-        swActif =           (Switch)    findViewById(R.id.swActif);
-        spnAction =         (Spinner)   findViewById(R.id.spnAction);
+        spnAction = (Spinner) findViewById(R.id.spnAction);
+        spnCompte = (Spinner) findViewById(R.id.spnCompte);
+        edtIDVillage = (EditText) findViewById(R.id.edtIDVillage);
+        edtInfoComp = (EditText) findViewById(R.id.edtInfoComp);
+        edtTime = (EditText) findViewById(R.id.edtTime);
+        swActif = (Switch) findViewById(R.id.swActif);
+        spnAction = (Spinner) findViewById(R.id.spnAction);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.action, android.R.layout.simple_spinner_item);
+                                                                             R.array.action, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnAction.setAdapter(adapter);
 
         lstComptes = CompteDAO.getListComptes(bdd);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, CompteDAO.getShowedName(lstComptes));
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, CompteDAO.getShowedName(lstComptes));
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
         spnCompte.setAdapter(spinnerArrayAdapter);
 
@@ -81,7 +80,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
 
-        ((Button)findViewById(R.id.btnSave)).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.btnSave)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (edtIDVillage.getText().toString().isEmpty())
@@ -100,7 +99,7 @@ public class DetailActivity extends AppCompatActivity {
 
         });
 
-        ((Button)findViewById(R.id.btnSuppr)).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.btnSuppr)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ID != -1) {
@@ -123,7 +122,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void SaveAndQuit() {
-        if (ID != -1){
+        if (ID != -1) {
             ContentValues cv = new ContentValues();
             cv.put(CommandeEntry.COL_ACTION, c.getAction());
             cv.put(CommandeEntry.COL_VILLAGE, c.getVillage());
@@ -132,8 +131,8 @@ public class DetailActivity extends AppCompatActivity {
             cv.put(CommandeEntry.COL_MINUTE, c.getMinute());
             cv.put(CommandeEntry.COL_ACTIF, c.getActif());
 
-            String selection = CommandeEntry.COL_ID + " = ?";
-            String[] selectionArgs = { Integer.toString(ID) };
+            String   selection     = CommandeEntry.COL_ID + " = ?";
+            String[] selectionArgs = {Integer.toString(ID)};
 
             int count = bdd.getWritableDatabase().update(
                     CommandeEntry.TABLE_NAME,
@@ -160,7 +159,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;

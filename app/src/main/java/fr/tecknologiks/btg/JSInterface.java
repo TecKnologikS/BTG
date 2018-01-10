@@ -76,8 +76,8 @@ public class JSInterface {
         }
         if (!message.isEmpty()) {
             Log.e("ATTACK", "on " + message);
+            Function.Notification(context, "ATTACK ON " + message);
             if ((System.currentTimeMillis() - PreferenceManager.getDefaultSharedPreferences(context).getLong("last", 0)) > 1800000) {
-                Function.Notification(context, "ATTACK ON " + message);
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putLong("last", System.currentTimeMillis()).commit();
             }
             callback.onEvasionAdded();

@@ -17,6 +17,10 @@ public class CommandeDAO {
 
 
     public static ArrayList<Commande> getCommandeByIdCompte(DBHelper bdd, int _id) {
+        return CommandeDAO.getAllCommandeByIdCompte(bdd, _id, true);
+    }
+
+    public static ArrayList<Commande> getAllCommandeByIdCompte(DBHelper bdd, int _id, boolean onlyActif) {
         ArrayList<Commande> retour = new ArrayList<>();
         String[] projection = {
                 CommandeContract.CommandeEntry.COL_ID,
@@ -29,9 +33,9 @@ public class CommandeDAO {
                 CommandeContract.CommandeEntry.COL_ACTIF
         };
         Cursor cursor = bdd.getReadableDatabase().query(CommandeContract.CommandeEntry.TABLE_NAME,
-                projection,
-                CommandeContract.CommandeEntry.COL_ID_COMPTE + " = " + _id,
-                null, null, null, CommandeContract.CommandeEntry.COL_ID + " ASC ");
+                                                        projection,
+                                                        CommandeContract.CommandeEntry.COL_ID_COMPTE + " = " + _id,
+                                                        null, null, null, CommandeContract.CommandeEntry.COL_ID + " ASC ");
         while(cursor.moveToNext()) {
             Commande tmp = new Commande();
             tmp.setID(cursor.getInt(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_ID)));
@@ -42,9 +46,12 @@ public class CommandeDAO {
             tmp.setInfo_comp(cursor.getString(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_INFO_COMP)));
             tmp.setLasttime(Long.parseLong(cursor.getString(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_LAST_TIME))));
             tmp.setActifInt(cursor.getInt(cursor.getColumnIndex(CommandeContract.CommandeEntry.COL_ACTIF)));;
-            if (tmp.isActif())
-                if ((tmp.getLasttime() + (60000 * tmp.getMinute())) < System.currentTimeMillis())
+            if (onlyActif) {
+                if (tmp.isActif() && ((tmp.getLasttime() + (60000 * tmp.getMinute())) < System.currentTimeMillis()))
                     retour.add(tmp);
+            } else {
+                retour.add(tmp);
+            }
         }
         cursor.close();
 

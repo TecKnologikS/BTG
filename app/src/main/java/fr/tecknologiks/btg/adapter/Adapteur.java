@@ -1,6 +1,7 @@
 package fr.tecknologiks.btg.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,19 +60,24 @@ public class Adapteur extends BaseAdapter {
         String tmp = "";
         switch(commandes.get(position).getAction()) {
             case Action.PILLAGE:
-                tmp = "Pillage village " + commandes.get(position).getVillage();
+                tmp = commandes.get(position).getCompte() + " Pillage village " + commandes.get(position).getVillage() + " -- " + commandes.get(position).getInfo_comp();
                 break;
             case Action.TROUPE_ECURIE:
-                tmp = "Troupe écurie village " + commandes.get(position).getVillage();
+                tmp = commandes.get(position).getCompte() + " Troupe écurie village " + commandes.get(position).getVillage();
                 break;
             case Action.TROUPE_CASERNE:
-                tmp = "Troupe caserne village " + commandes.get(position).getVillage();
+                tmp = commandes.get(position).getCompte() + " Troupe caserne village " + commandes.get(position).getVillage();
                 break;
             case Action.TROUPE_ATELIER:
-                tmp = "Troupe atelier village " + commandes.get(position).getVillage();
+                tmp = commandes.get(position).getCompte() + " Troupe atelier village " + commandes.get(position).getVillage();
+                break;
+            case Action.VERIF_INCOMMING_ATTACK:
+                tmp = commandes.get(position).getCompte() + " Verification attaque " + commandes.get(position).getVillage();
                 break;
         }
         ((TextView)convertView.findViewById(R.id.tvNom)).setText(tmp);
+        if (!commandes.get(position).isActif())
+            ((TextView)convertView.findViewById(R.id.tvNom)).setTextColor(Color.RED);
         return convertView;
     }
 

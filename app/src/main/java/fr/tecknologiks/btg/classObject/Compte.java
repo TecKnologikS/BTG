@@ -1,5 +1,7 @@
 package fr.tecknologiks.btg.classObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by robinpauquet on 05/12/2017.
  */
@@ -11,6 +13,7 @@ public class Compte {
     private String password;
     private String server;
     private boolean actif;
+    private ArrayList<Commande> lstCommande = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -50,5 +53,13 @@ public class Compte {
 
     public void setActif(boolean actif) {
         this.actif = actif;
+    }
+
+    public ArrayList<Commande> getLstCommande() {
+        return lstCommande;
+    }
+
+    public void setLstCommande(ArrayList<Commande> lstCommande) {
+        this.lstCommande = lstCommande;
     }
 }

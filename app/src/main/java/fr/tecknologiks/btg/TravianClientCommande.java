@@ -31,8 +31,6 @@ import static fr.tecknologiks.btg.bdd.CommandeContract.*;
 public class TravianClientCommande extends WebViewClient {
 
     private DBHelper bdd;
-    private String user;
-    private String mdp;
     private String url;
     private String previous = "FIRSTPAGE";
     private boolean troupage = false;
@@ -53,30 +51,45 @@ public class TravianClientCommande extends WebViewClient {
     }
 
     public TravianClientCommande() {
-        this.user = "";
-        this.mdp = "";
         this.url = "";
     }
 
-    public TravianClientCommande(String _user, String _mdp, String _url, SharedPreferences _prefs, DBHelper _bdd, Callback callback) {
-        this.user = _user;
-        this.mdp = _mdp;
-        this.url = _url;
+    public TravianClientCommande(SharedPreferences _prefs, DBHelper _bdd, Callback callback) {
         this.prefs = _prefs;
         this.bdd = _bdd;
-        this.lstComptes = CompteDAO.getListComptes(bdd);
-        if (lstComptes.size() > 0)
-            this.lstCommande = CommandeDAO.getCommandeByIdCompte(bdd, lstComptes.get(0).getId());
-        if (lstCommande.size() > 0)
-            lstAction = lstCommande.get(0).generateSubCommande();
         this.callback = callback;
+        Reload();
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public boolean hasActionToDo() {
+        Log.e("has action to do", "" + (this.lstComptes.size() > 0));
+        return (boolean)(this.lstComptes.size() > 0);
     }
 
     public void Reload() {
-        if (lstComptes.size() > 0)
-            this.lstCommande = CommandeDAO.getCommandeByIdCompte(bdd, lstComptes.get(0).getId());
-        if (lstCommande.size() > 0)
-            lstAction = lstCommande.get(0).generateSubCommande();
+        this.lstComptes = CompteDAO.getListComptes(bdd);
+        for(int i = lstComptes.size() - 1; i >= 0;  i--) {
+            this.lstCommande = CommandeDAO.getCommandeByIdCompte(bdd, lstComptes.get(i).getId());
+            for(int j = lstCommande.size() - 1; j >= 0; j--) {
+                if (System.currentTimeMillis() < (lstCommande.get(j).getLasttime() + (60000 * lstCommande.get(j).getMinute()))) {
+                    lstCommande.remove(j);
+                } else {
+                    this.lstComptes.get(i).getLstCommande().add(lstCommande.get(j));
+                }
+            }
+            if (lstCommande.size() <= 0)
+                lstComptes.remove(i);
+        }
+        if (this.lstComptes.size() > 0) {
+            Log.d("RELOAD" ,  "compte " + lstComptes.get(0).getLogin() + " actions : " + lstCommande.size());
+            this.url = this.lstComptes.get(0).getServer();
+            this.lstAction = lstComptes.get(0).getLstCommande().get(0).generateSubCommande();
+        }
+        lstAction.clear();
     }
 
 
@@ -115,10 +128,13 @@ public class TravianClientCommande extends WebViewClient {
                 //view.loadUrl(this.url + "/" + Page.ALLSEE);
                 break;
             case Page.LOGIN:
-                if (previous == Page.LOGIN)
+                Log.e("login", "previous page: " + previous + " actual " + urlPage);
+                if (previous == Page.LOGIN) {
+                    Log.e("login page", "erooroooooorr");
                     this.callback.onLoginErrorShowError();
-                else
+                } else {
                     Login(view);
+                }
                 break;
             default:
                 DoAction(view);
@@ -130,14 +146,13 @@ public class TravianClientCommande extends WebViewClient {
 
 
     private void Login(WebView view) {
-        if (previous.equals(Page.DEFAULT) || previous.equals(Page.LOGIN))
-        {
-            //TODO: error
+        Log.e("login", "do login");
+        if (lstComptes.size() > 0) {
+            Log.e("login", "url : "+ view.getUrl() + " - login : " + this.lstComptes.get(0).getLogin() + " - pwd : " + this.lstComptes.get(0).getPassword());
+            view.evaluateJavascript("document.getElementsByName('name')[0].value = '" + this.lstComptes.get(0).getLogin() + "'", null);
+            view.evaluateJavascript("document.getElementsByName('password')[0].value = '" + this.lstComptes.get(0).getPassword() + "'", null);
+            view.evaluateJavascript("document.getElementsByName('login')[0].submit();", null);
         }
-
-        view.evaluateJavascript("document.getElementsByName('name')[0].value = '" + this.user + "'", null);
-        view.evaluateJavascript("document.getElementsByName('password')[0].value = '" + this.mdp + "'", null);
-        view.evaluateJavascript("document.getElementsByName('login')[0].submit();", null);
     }
 
     private void Ressource(WebView view) {
@@ -164,36 +179,57 @@ public class TravianClientCommande extends WebViewClient {
     }
 
     private void DoAction(WebView view) {
-        if(lstAction.size() > 0) {
-            SubCommande sc = lstAction.get(0);
-            lstAction.remove(0);
-            switch(sc.getAction()) {
-                case SubAction.LOAD_URL:
-                    view.loadUrl(this.url + "/" + sc.getInfocomp());
-                    Log.e("BTG", "loadurl ==> " + this.url + "/" + sc.getInfocomp());
-                    break;
-                case SubAction.EXEC_JS:
-                    view.evaluateJavascript(sc.getInfocomp(), null);
-                    Log.e("BTG", "execjs ==> " + sc.getInfocomp());
-                    break;
-            }
-        } else {
-            if (lstCommande.size() > 0) {
-                lstCommande.get(0).updateLastTime(this.bdd);
-                lstCommande.remove(0);
-                if (lstCommande.size() > 0) {
-                    if (System.currentTimeMillis() >= (lstCommande.get(0).getLasttime() + (60000 * lstCommande.get(0).getMinute()))) {
-                        lstAction = lstCommande.get(0).generateSubCommande();
-                        DoAction(view);
-                    } else {
-                        lstCommande.remove(0);
-                        DoAction(view);
-                    }
+        if (lstComptes.size() > 0) {
+            if (lstAction.size() > 0) {
+                SubCommande sc = lstAction.get(0);
+                lstAction.remove(0);
+                switch(sc.getAction()) {
+                    case SubAction.LOAD_URL:
+                        view.loadUrl(this.url + "/" + sc.getInfocomp());
+                        Log.e("BTG", "loadurl ==> " + this.url + "/" + sc.getInfocomp());
+                        break;
+                    case SubAction.EXEC_JS:
+                        view.evaluateJavascript(sc.getInfocomp(), null);
+                        Log.e("BTG", "execjs ==> " + sc.getInfocomp());
+                        break;
                 }
             } else {
-                if (!view.getUrl().equals(this.url + "/" + Page.ALLSEE))
-                    view.loadUrl(this.url + "/" + Page.ALLSEE);
+                if (lstComptes.get(0).getLstCommande().size() > 0) {
+                    lstComptes.get(0).getLstCommande().get(0).updateLastTime(this.bdd);
+                    lstComptes.get(0).getLstCommande().remove(0);
+                    if (lstComptes.get(0).getLstCommande().size() > 0) {
+                        if (System.currentTimeMillis() >= (lstComptes.get(0).getLstCommande().get(0).getLasttime() + (60000 * lstComptes.get(0).getLstCommande().get(0).getMinute()))) {
+                            lstAction = lstComptes.get(0).getLstCommande().get(0).generateSubCommande();
+                            DoAction(view);
+                        } else {
+                            lstComptes.get(0).getLstCommande().remove(0);
+                            DoAction(view);
+                        }
+                    } else {
+                        lstComptes.remove(0);
+                        if (lstComptes.size() > 0) {
+                            this.lstCommande = CommandeDAO.getCommandeByIdCompte(bdd, lstComptes.get(0).getId());
+                            if (lstCommande.size() > 0)
+                            {
+                                while(lstCommande.size() > 0) {
+                                    if (System.currentTimeMillis() >= (lstComptes.get(0).getLstCommande().get(0).getLasttime() + (60000 * lstComptes.get(0).getLstCommande().get(0).getMinute()))) {
+                                        lstAction = lstComptes.get(0).getLstCommande().get(0).generateSubCommande();
+                                        break;
+                                    } else {
+                                        lstComptes.get(0).getLstCommande().remove(0);
+                                    }
+                                }
+                                this.url = this.lstComptes.get(0).getServer();
+                                if (lstComptes.get(0).getLstCommande().size() > 0)
+                                    view.loadUrl(this.url + "/" + Page.LOGIN);
+                            }
+                        }
+                    }
+                }
             }
+        } else {
+            if (!view.getUrl().equals(this.url + "/" + Page.ALLSEE))
+                view.loadUrl(this.url + "/" + Page.ALLSEE);
         }
     }
 }
